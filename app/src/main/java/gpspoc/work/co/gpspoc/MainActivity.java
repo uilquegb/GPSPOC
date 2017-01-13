@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         Log.i(TAG, "Location services connected.");
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -82,17 +82,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             return;
         }
 
-
-        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        Log.i(TAG, "Getting last location.");
-
-        if (lastLocation == null) {
-            Log.i(TAG, "There's no last location available.");
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-            return;
-        }
-
-        handleNewLocation(lastLocation);
+        Log.i(TAG, "Requesting location updates.");
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
 
     @Override
@@ -128,5 +119,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         Log.i(TAG, "Location updated: %s" + location.toString());
         handleNewLocation(location);
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 }
